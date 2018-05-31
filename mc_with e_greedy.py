@@ -5,6 +5,7 @@
 import random
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 #import utility file it contains e-greedy exploration function
 from utils import *
@@ -14,8 +15,8 @@ from environment import *
 # hyperparameters
 # Considering No Discounting of future reward :
 gamma = 1.0
-No = 1.0
-epochs = 8000
+No = 100.0
+epochs = 2000000
 # Size of Lookup table will be (player_state_size*dealer_state_size*action_size)
 # Starting with 0 value for each possible state-action pair
 Q_table = np.zeros((21,10,2))
@@ -48,10 +49,10 @@ for ep in range(epochs):
     mean_square_error = sum_of_sq_error/len(policy)
     Error_per_epoch.append(mean_square_error)
     if ep%100==0:
-        print("Epochs Completed ",ep,"out oftotal ",epochs)
+        print("Epochs Completed ",ep,"out of total ",epochs)
 #plt.plot(Error_per_epoch)
 #plt.show()
-# Plot a graph showing the wwhen two hit
+# Plot a graph showing the valuefunction of that state
 ## deviding data into 3d corddinates
 X = []
 Y = []
@@ -60,22 +61,14 @@ for x in range(21):
     for y in range(10):
         X.append(x)
         Y.append(y)
-        if np.sum(N_state_action[x,y,:])==0 :
-            Z.append(0.5)
-        else:
-            Z.append(np.argmax(Q_table[x,y,:]))
+        Z.append(np.amax(Q_table[x,y,:]))
 
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
-print(X)
-print(Y)
-print(Z)
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.scatter(X, Y, Z)
-ax.set_xlabel('X Label')
-ax.set_ylabel('Y Label')
-ax.set_zlabel('Z Label')
+ax.plot_trisurf(Y, X, Z, cmap=cm.coolwarm)
+ax.set_xlabel('Initial Card Value of Dealer')
+ax.set_ylabel('Total Card Value of Player')
+ax.set_zlabel('Value of State')
 
 plt.show()

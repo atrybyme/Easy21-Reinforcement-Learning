@@ -13,7 +13,7 @@ class Env():
         if random.randint(1,3)<3:
             return (card_value)
         else:
-            return (1*card_value)
+            return (-1*card_value)
     def step(self,action):
         if action==1:
             self.playersum += self.draw()
