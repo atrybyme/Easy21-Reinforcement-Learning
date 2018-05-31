@@ -11,9 +11,9 @@ class Env():
     def draw(self):
         card_value = random.randint(1,10)
         if random.randint(1,3)<3:
-            return card_value
+            return (card_value)
         else:
-            return (-1*card_value)
+            return (1*card_value)
     def step(self,action):
         if action==1:
             self.playersum += self.draw()
@@ -34,3 +34,6 @@ class Env():
                 return "finish",0.0
     def state(self):
         return [self.playersum,self.dealersum]
+    def reset(self):
+        self.playersum = random.randint(1, 10)
+        self.dealersum = random.randint(1, 10)
