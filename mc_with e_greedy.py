@@ -16,7 +16,7 @@ from environment import *
 # Considering No Discounting of future reward :
 gamma = 1.0
 No = 100.0
-epochs = 2000000
+epochs = 200000
 # Size of Lookup table will be (player_state_size*dealer_state_size*action_size)
 # Starting with 0 value for each possible state-action pair
 Q_table = np.zeros((21,10,2))
@@ -25,10 +25,21 @@ N_state_action  = np.zeros((21,10,2))
 Error_per_epoch = []
 game = Env()
 for ep in range(epochs):
-    # Sampling policy with epsilon_greedy Exploration and recording it
+    # Sampling policy with epsilon_greedy Exploration and recording it in policy
     game.reset()
-    # we get a matrix of series of state,action,reward
-    policy = e_greedy_expo(game,Q_table,N_state_action,No)
+    policy = []
+    state = [game.playersum, game.dealersum]
+    while state != "finish":
+         # sar denotes [state,action,pair] at any time t
+        sar = [] 
+        sar.append(state)
+        # e_greedy_expo function gives us the next action value
+        action = e_greedy_expo(game,Q_table,N_state_action,No)
+        state, reward = game.step(action)
+        sar.append(action)
+        sar.append(reward)
+        #we append sar at every time step
+        policy.append(sar)
     #Total discounted reward be g_t = r_t + gamma*r_t+1 + .....
     #lets create a array giving g_T at any time t
     G = []
@@ -59,8 +70,8 @@ Y = []
 Z = []
 for x in range(21):
     for y in range(10):
-        X.append(x)
-        Y.append(y)
+        X.append(x+1)
+        Y.append(y+1)
         Z.append(np.amax(Q_table[x,y,:]))
 
 
